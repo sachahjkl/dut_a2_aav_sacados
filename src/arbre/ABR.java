@@ -1,6 +1,7 @@
 package arbre;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import objet.Objet;
 
@@ -26,19 +27,30 @@ public class ABR {
 
 	public void ajout(Objet o, double vo_restant) {
 		double valEns = Objet.getSommeVal(ens);
-		ABR.valMin = valEns > ABR.valMin ? valEns : ABR.valMin;
 		if (fd == null && fg == null) {
-			if (Objet.getSommePoids((this.ens)) + o.getPoids() <= ABR.poidsMax && valEns < vo_restant) {
+			if ((Objet.getSommePoids(this.ens) + o.getPoids()) <= ABR.poidsMax
+					&& valEns + vo_restant + o.getValeur() >= ABR.valMin) {
+				ABR.valMin = valEns > ABR.valMin ? valEns : ABR.valMin;
 				LinkedList<Objet> tmp = new LinkedList<Objet>(this.ens);
 				tmp.add(o);
 				fd = new ABR(tmp);
 				fg = new ABR(this.ens);
 			}
-
 		} else {
 			fd.ajout(o, vo_restant);
 			fg.ajout(o, vo_restant);
 		}
+	}
+
+	public List<Objet> max() {
+		if (fd == null && fg == null)
+			return this.ens;
+		if (Objet.getSommeVal(fd.max()) > Objet.getSommeVal(fg.max()))
+			return fd.max();
+		if (Objet.getSommeVal(fd.max()) == Objet.getSommeVal(fg.max()))
+			return fd.max();
+		else
+			return fg.max();
 	}
 
 	public static void setValMin(double v) {

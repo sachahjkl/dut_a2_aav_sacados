@@ -11,10 +11,10 @@ import objet.Objet;
 
 public class SacADos {
 	private String chemin;
-	private double poids_maximal;
+	private float poids_maximal;
 	private ArrayList<Objet> transporte, obj_pos;
 
-	public SacADos(String c, double p) {
+	public SacADos(String c, float p) {
 		this();
 		this.chemin = c;
 		this.poids_maximal = p;
@@ -32,23 +32,24 @@ public class SacADos {
 			String[] split = s.split(" ; ");
 			split[1] = split[1].contains(".") ? split[1] : split[1] + ".0";
 			split[2] = split[2].contains(".") ? split[2] : split[2] + ".0";
-			this.obj_pos.add(new Objet(split[0], Double.parseDouble(split[1]), Double.parseDouble(split[2])));
+			this.obj_pos.add(new Objet(split[0], Float.parseFloat(split[1]), Float.parseFloat(split[2])));
 			s = reader.readLine();
 		}
 		reader.close();
 	}
 
-	public double getPoids() {
+	public float getPoids() {
 		return Objet.getSommePoids(transporte);
 	}
 
-	public double getVal() {
+	public float getVal() {
 		return Objet.getSommeVal(transporte);
 	}
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		if(transporte.size() == 0) return sb.toString();
+		if (transporte.size() == 0)
+			return sb.toString();
 		for (int i = 0; i < transporte.size() - 1; ++i) {
 			sb.append(transporte.get(i) + "\n");
 		}
@@ -72,7 +73,7 @@ public class SacADos {
 	public void resoudreProgDyn() {
 		this.viderSac();
 		int poidsMaxS = (int) (this.poids_maximal * 10);
-		double[][] M = new double[this.obj_pos.size()][(int) poidsMaxS + 1];
+		float[][] M = new float[this.obj_pos.size()][(int) poidsMaxS + 1];
 		for (int j = 0; j < poidsMaxS + 1; ++j) {
 			if (this.obj_pos.get(0).getPoids() * 10 > j)
 				M[0][j] = 0f;
@@ -109,16 +110,18 @@ public class SacADos {
 		ArrayList<Objet> tmp = new ArrayList<>(this.obj_pos);
 		this.resoudreGloutone();
 		ABR.setValMin(this.getVal());
+		ABR.setPoidsMax(poids_maximal);
 		this.viderSac();
-		for(Objet o : obj_pos) {
+		for (Objet o : obj_pos) {
 			a.ajout(o, Objet.getSommeVal(tmp));
 			tmp.remove(o);
 		}
+		this.transporte = new ArrayList<Objet>(a.max());
 	}
 
 	public static void main(String[] args) throws IOException {
-		SacADos mon_sac = new SacADos("./items/itemsEval.txt", 30f); // différence avec poids max 30f et fic. itemsEval
-		// SacADos mon_sac = new SacADos(args[0], double.parsedouble(args[1]));
+		SacADos mon_sac = new SacADos("./items/items.txt", 30f); // différence avec poids max 30f et fic. itemsEval
+		// SacADos mon_sac = new SacADos(args[0], float.parsefloat(args[1]));
 		// String methode = args[2];
 		String methode = "prog. dynamique"; // gloutonne, prog. dynamique, pse
 		mon_sac.lectureFic();
@@ -139,8 +142,8 @@ public class SacADos {
 		}
 		long endTime = System.nanoTime();
 		long timeElapsed = endTime - startTime;
-		System.out.println("Temps écoulé: " + timeElapsed +"ns");
 		TimeRecord.addTime(methode, timeElapsed);
+		System.out.println("Temps écoulé: " + timeElapsed + "ns");
 		System.out.println(mon_sac.toString());
 		System.out.println("Poids : " + mon_sac.getPoids() + "; Valeur : " + mon_sac.getVal());
 		// commentaire diff
