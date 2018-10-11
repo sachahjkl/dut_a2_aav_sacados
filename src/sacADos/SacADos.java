@@ -6,14 +6,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import arbre.ABR;
 import objet.Objet;
 
 public class SacADos {
 	private String chemin;
-	private float poids_maximal;
+	private double poids_maximal;
 	private ArrayList<Objet> transporte, obj_pos;
 
-	public SacADos(String c, float p) {
+	public SacADos(String c, double p) {
 		this();
 		this.chemin = c;
 		this.poids_maximal = p;
@@ -29,39 +30,32 @@ public class SacADos {
 		String s = reader.readLine();
 		while (s != null) {
 			String[] split = s.split(" ; ");
-			split[1] = split[1].contains(".") ? split[1] : split[1] +".0";
-			split[2] = split[2].contains(".") ? split[2] : split[2] +".0";
-			this.obj_pos.add(new Objet(split[0], Float.parseFloat(split[1]), Float.parseFloat(split[2])));
+			split[1] = split[1].contains(".") ? split[1] : split[1] + ".0";
+			split[2] = split[2].contains(".") ? split[2] : split[2] + ".0";
+			this.obj_pos.add(new Objet(split[0], Double.parseDouble(split[1]), Double.parseDouble(split[2])));
 			s = reader.readLine();
 		}
 		reader.close();
 	}
 
-	public float getPoids() {
-		float p = 0;
-		for (Objet o : this.transporte) {
-			p += o.getPoids();
-		}
-		return p;
+	public double getPoids() {
+		return Objet.getSommePoids(transporte);
 	}
-	
-	public float getVal() {
-		float v = 0;
-		for (Objet o : this.transporte) {
-			v += o.getValeur();
-		}
-		return v;
+
+	public double getVal() {
+		return Objet.getSommeVal(transporte);
 	}
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i< transporte.size() - 1; ++i) {
+		if(transporte.size() == 0) return sb.toString();
+		for (int i = 0; i < transporte.size() - 1; ++i) {
 			sb.append(transporte.get(i) + "\n");
 		}
-		sb.append(this.transporte.get(transporte.size()-1));
+		sb.append(this.transporte.get(transporte.size() - 1));
 		return sb.toString();
 	}
- 
+
 	public void viderSac() {
 		this.transporte.clear();
 	}
@@ -69,7 +63,6 @@ public class SacADos {
 	public void resoudreGloutone() {
 		this.viderSac();
 		Collections.sort(this.obj_pos, Collections.reverseOrder());
-		System.out.println(this.obj_pos.toString());
 		for (Objet o : this.obj_pos) {
 			if (this.getPoids() + o.getPoids() <= this.poids_maximal)
 				this.transporte.add(o);
@@ -79,7 +72,7 @@ public class SacADos {
 	public void resoudreProgDyn() {
 		this.viderSac();
 		int poidsMaxS = (int) (this.poids_maximal * 10);
-		float[][] M = new float[this.obj_pos.size()][(int) poidsMaxS + 1];
+		double[][] M = new double[this.obj_pos.size()][(int) poidsMaxS + 1];
 		for (int j = 0; j < poidsMaxS + 1; ++j) {
 			if (this.obj_pos.get(0).getPoids() * 10 > j)
 				M[0][j] = 0f;
@@ -110,26 +103,26 @@ public class SacADos {
 			--i;
 		}
 	}
-	
+
 	public void resoudrePSE() {
-		//TreeSet<Objet> tree = new TreeSet<>();
-		
-	}
-	
-	public float getSommeValPoidsObjet() {
-		float res = 0;
-		for (Objet o : this.obj_pos) {
-			res += o.getRapportVP();
+		ABR a = new ABR();
+		ArrayList<Objet> tmp = new ArrayList<>(this.obj_pos);
+		this.resoudreGloutone();
+		ABR.setValMin(this.getVal());
+		this.viderSac();
+		for(Objet o : obj_pos) {
+			a.ajout(o, Objet.getSommeVal(tmp));
+			tmp.remove(o);
 		}
-		return res;
 	}
 
 	public static void main(String[] args) throws IOException {
 		SacADos mon_sac = new SacADos("./items/itemsEval.txt", 30f); // différence avec poids max 30f et fic. itemsEval
-		// SacADos mon_sac = new SacADos(args[0], Float.parseFloat(args[1]));
+		// SacADos mon_sac = new SacADos(args[0], double.parsedouble(args[1]));
 		// String methode = args[2];
 		String methode = "prog. dynamique"; // gloutonne, prog. dynamique, pse
 		mon_sac.lectureFic();
+		long startTime = System.nanoTime();
 		switch (methode) {
 		case "gloutonne":
 			mon_sac.resoudreGloutone();
@@ -139,14 +132,17 @@ public class SacADos {
 			break;
 		case "pse":
 			mon_sac.resoudrePSE();
-			System.exit(-1);
 			break;
 		default:
 			System.err.println("Vous n'avez pas saisie une méthode valide. (gloutonne, prog. dynamique ou pse)");
 			System.exit(-1);
 		}
-		System.out.println(mon_sac);
-		System.out.println("Poids : "+mon_sac.getPoids()+"; Valeur : " +mon_sac.getVal());
-		//commentaire diff
+		long endTime = System.nanoTime();
+		long timeElapsed = endTime - startTime;
+		System.out.println("Temps écoulé: " + timeElapsed +"ns");
+		TimeRecord.addTime(methode, timeElapsed);
+		System.out.println(mon_sac.toString());
+		System.out.println("Poids : " + mon_sac.getPoids() + "; Valeur : " + mon_sac.getVal());
+		// commentaire diff
 	}
 }
