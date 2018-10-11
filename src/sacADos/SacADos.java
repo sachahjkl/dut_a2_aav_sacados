@@ -120,30 +120,30 @@ public class SacADos {
 	}
 
 	public static void main(String[] args) throws IOException {
-		SacADos mon_sac = new SacADos("./items/items.txt", 30f); // différence avec poids max 30f et fic. itemsEval
-		// SacADos mon_sac = new SacADos(args[0], float.parsefloat(args[1]));
-		// String methode = args[2];
-		String methode = "prog. dynamique"; // gloutonne, prog. dynamique, pse
+		//SacADos mon_sac = new SacADos("./items/items.txt", 30f); // différence avec poids max 30f et fic. itemsEval
+		SacADos mon_sac = new SacADos(args[0], Float.parseFloat(args[1]));
+		String methode = args[2];
+		//String methode = "prog.dynamique"; // gloutonne, prog. dynamique, pse
 		mon_sac.lectureFic();
 		long startTime = System.nanoTime();
 		switch (methode) {
 		case "gloutonne":
 			mon_sac.resoudreGloutone();
 			break;
-		case "prog. dynamique":
+		case "prog.dynamique":
 			mon_sac.resoudreProgDyn();
 			break;
 		case "pse":
 			mon_sac.resoudrePSE();
 			break;
 		default:
-			System.err.println("Vous n'avez pas saisie une méthode valide. (gloutonne, prog. dynamique ou pse)");
+			System.err.println("Vous n'avez pas saisie une methode valide. (gloutonne, prog.dynamique ou pse)");
 			System.exit(-1);
 		}
 		long endTime = System.nanoTime();
 		long timeElapsed = endTime - startTime;
 		TimeRecord.addTime(methode, timeElapsed);
-		System.out.println("Temps écoulé: " + timeElapsed + "ns");
+		System.out.println("Temps ecoule: " + timeElapsed + "ns");
 		System.out.println(mon_sac.toString());
 		System.out.println("Poids : " + mon_sac.getPoids() + "; Valeur : " + mon_sac.getVal());
 		// commentaire diff
