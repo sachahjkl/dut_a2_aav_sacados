@@ -38,6 +38,7 @@ public class Objet implements Comparable<Objet> {
 
 	public static float getSommeVal(List<Objet> lo) {
 		float res = 0;
+		if(lo == null) return res;
 		for (Objet o : lo)
 			res += o.valeur;
 		return res;
@@ -45,6 +46,7 @@ public class Objet implements Comparable<Objet> {
 
 	public static float getSommePoids(List<Objet> lo) {
 		float res = 0;
+		if(lo == null) return res;
 		for (Objet o : lo)
 			res += o.poids;
 		return res;
