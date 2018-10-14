@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import arbre.ABR;
+import arbre.AB;
 import objet.Objet;
 
 public class SacADos {
@@ -106,11 +106,11 @@ public class SacADos {
 	}
 
 	public void resoudrePSE() {
-		ABR a = new ABR();
+		AB a = new AB();
 		ArrayList<Objet> tmp = new ArrayList<>(this.obj_pos);
 		this.resoudreGloutone();
-		ABR.setValMin(this.getVal());
-		ABR.setPoidsMax(poids_maximal);
+		AB.setValMin(this.getVal());
+		AB.setPoidsMax(poids_maximal);
 		this.viderSac();
 		for (Objet o : obj_pos) {
 			a.ajout(o, Objet.getSommeVal(tmp));
@@ -120,10 +120,10 @@ public class SacADos {
 	}
 
 	public static void main(String[] args) throws IOException {
-		//SacADos mon_sac = new SacADos("./items/items.txt", 30f); // différence avec poids max 30f et fic. itemsEval
+//		SacADos mon_sac = new SacADos("./items/items.txt", 30f); // différence avec poids max 30f et fic. itemsEval
 		SacADos mon_sac = new SacADos(args[0], Float.parseFloat(args[1]));
 		String methode = args[2];
-		//String methode = "prog.dynamique"; // gloutonne, prog. dynamique, pse
+//		String methode = "pse"; // gloutonne, prog. dynamique, pse
 		mon_sac.lectureFic();
 		long startTime = System.nanoTime();
 		switch (methode) {
