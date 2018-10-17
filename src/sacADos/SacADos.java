@@ -63,8 +63,9 @@ public class SacADos {
 
 	public void resoudreGloutone() {
 		this.viderSac();
-		Collections.sort(this.obj_pos, Collections.reverseOrder());
-		for (Objet o : this.obj_pos) {
+		ArrayList<Objet> sorted = new ArrayList<>(this.obj_pos);
+		sorted.sort(Collections.reverseOrder()); // O(N*log(N))
+		for (Objet o : sorted) {
 			if (this.getPoids() + o.getPoids() <= this.poids_maximal)
 				this.transporte.add(o);
 		}
@@ -108,11 +109,13 @@ public class SacADos {
 	public void resoudrePSE() {
 		AB a = new AB();
 		ArrayList<Objet> tmp = new ArrayList<>(this.obj_pos);
+		ArrayList<Objet> sorted = new ArrayList<>(this.obj_pos);
+		sorted.sort(Collections.reverseOrder()); // O(N*log(N))
 		this.resoudreGloutone();
 		AB.setValMin(this.getVal());
 		AB.setPoidsMax(poids_maximal);
 		this.viderSac();
-		for (Objet o : obj_pos) {
+		for (Objet o : sorted) {
 			a.ajout(o, Objet.getSommeVal(tmp));
 			tmp.remove(o);
 		}
@@ -120,10 +123,17 @@ public class SacADos {
 	}
 
 	public static void main(String[] args) throws IOException {
-		SacADos mon_sac = new SacADos("./items/itemsEval.txt", 22f); // différence avec poids max 30f et fic. itemsEval
-//		SacADos mon_sac = new SacADos(args[0], Float.parseFloat(args[1]));
-//		String methode = args[2];
-		String methode = "pse"; // gloutonne, prog. dynamique, pse
+//		SacADos mon_sac = new SacADos("./items/itemsEval-float.txt", 30f); // différence avec poids max 30f et fic. itemsEval
+		SacADos mon_sac = null;
+		try {
+			mon_sac = new SacADos(args[0], Float.parseFloat(args[1]));
+		} catch (Exception e) {
+			System.err.println("Utilisation : ... resoudre-sac-a-dos.jar fichier poidsMax methode)");
+			System.exit(-1);
+		}
+		
+		String methode = args[2];
+//		String methode = "pse"; // gloutonne, prog.dynamique, pse
 		mon_sac.lectureFic();
 		long startTime = System.nanoTime();
 		switch (methode) {
@@ -141,11 +151,10 @@ public class SacADos {
 			System.exit(-1);
 		}
 		long endTime = System.nanoTime();
-		long timeElapsed = endTime - startTime;
+		long timeElapsed = (endTime - startTime);
 		TimeRecord.addTime(methode, timeElapsed);
 		System.out.println("Temps ecoule: " + timeElapsed + "ns");
 		System.out.println(mon_sac.toString());
 		System.out.println("Poids : " + mon_sac.getPoids() + "; Valeur : " + mon_sac.getVal());
-		// commentaire diff
 	}
 }

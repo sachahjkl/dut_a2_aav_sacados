@@ -1,40 +1,28 @@
 package arbre;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import objet.Objet;
 
 public class AB {
-	private LinkedList<Objet> ens;
+	private ArrayList<Objet> ens;
 	private static double valMin = 0, poidsMax = 0;
 	private AB fg;
 	private AB fd;
 
 	public AB() {
 		this.fg = this.fd = null;
-		this.ens = new LinkedList<>();
+		this.ens = new ArrayList<>();
 	}
 
-	private AB(LinkedList<Objet> ens) {
-		this.ens = new LinkedList<>(ens);
+	private AB(ArrayList<Objet> ens) {
+		this.ens = new ArrayList<>(ens);
 		this.fg = this.fd = null;
 	}
 
 	public void ajout(Objet o, double vo_restant) {
 		double valEns = Objet.getSommeVal(ens);
-//		if (fd == null && fg == null) {
-//			if ((Objet.getSommePoids(this.ens) + o.getPoids()) <= AB.poidsMax && valEns + vo_restant >= AB.valMin) {
-//				AB.valMin = valEns + o.getValeur() > AB.valMin ? valEns + o.getValeur() : AB.valMin;
-//				LinkedList<Objet> tmp = new LinkedList<Objet>(this.ens);
-//				tmp.add(o);
-//				fd = new AB(tmp);
-//				fg = new AB(this.ens);
-//			}
-//		} else {
-//			fd.ajout(o, vo_restant);
-//			fg.ajout(o, vo_restant);
-//		}
 		if (fd != null)
 			fd.ajout(o, vo_restant);
 		if (fg != null)
@@ -42,13 +30,12 @@ public class AB {
 		if (fd == null && (Objet.getSommePoids(this.ens) + o.getPoids() <= AB.poidsMax)
 				&& (valEns + vo_restant >= AB.valMin)) {
 			AB.valMin = valEns + o.getValeur() > AB.valMin ? valEns + o.getValeur() : AB.valMin;
-			LinkedList<Objet> tmp = new LinkedList<Objet>(this.ens);
+			ArrayList<Objet> tmp = new ArrayList<Objet>(this.ens);
 			tmp.add(o);
 			fd = new AB(tmp);
 		}
 		if (fg == null && valEns + vo_restant - o.getValeur() >= AB.valMin)
 			fg = new AB(ens);
-
 	}
 
 	public List<Objet> max() {
@@ -59,12 +46,13 @@ public class AB {
 				return fd.max();
 			if (Objet.getSommeVal(fd.max()) == Objet.getSommeVal(fg.max()))
 				return fd.max();
-		} 
-		if(fd == null && fg != null)
+			else
+				return fg.max();
+		}
+		if (fd == null && fg != null)
 			return fg.max();
-		if(fg == null && fd != null)
+		else
 			return fd.max();
-		else return fg.max();
 	}
 
 	public static void setValMin(double v) {
