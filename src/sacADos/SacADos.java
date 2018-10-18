@@ -123,17 +123,20 @@ public class SacADos {
 	}
 
 	public static void main(String[] args) throws IOException {
-//		SacADos mon_sac = new SacADos("./items/itemsEval-float.txt", 30f); // différence avec poids max 30f et fic. itemsEval
-		SacADos mon_sac = null;
-		try {
-			mon_sac = new SacADos(args[0], Float.parseFloat(args[1]));
-		} catch (Exception e) {
-			System.err.println("Utilisation : ... resoudre-sac-a-dos.jar fichier poidsMax methode)");
-			System.exit(-1);
-		}
-		
-		String methode = args[2];
-//		String methode = "pse"; // gloutonne, prog.dynamique, pse
+		// SacADos mon_sac = null;
+		// try {
+		// mon_sac = new SacADos(args[0], Float.parseFloat(args[1]));
+		// } catch (Exception e) {
+		// System.err.println("Utilisation : ... resoudre-sac-a-dos.jar fichier poidsMax
+		// methode)");
+		// System.exit(-1);
+		// }
+		// String methode = args[2];
+
+		SacADos mon_sac = new SacADos("./items/itemsEval-float.txt", 30f); // différence avec poids max 30f et fic.
+																			// itemsEval
+		String methode = "pse"; // gloutonne, prog.dynamique, pse
+
 		mon_sac.lectureFic();
 		long startTime = System.nanoTime();
 		switch (methode) {

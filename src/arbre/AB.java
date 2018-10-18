@@ -42,12 +42,14 @@ public class AB {
 		if (fd == null && fg == null)
 			return this.ens;
 		if (fd != null && fg != null) {
-			if (Objet.getSommeVal(fd.max()) > Objet.getSommeVal(fg.max()))
-				return fd.max();
-			if (Objet.getSommeVal(fd.max()) == Objet.getSommeVal(fg.max()))
-				return fd.max();
+			List<Objet> afd = fd.max();
+			List<Objet> afg = fg.max();
+			if (Objet.getSommeVal(afd) > Objet.getSommeVal(afg))
+				return afd;
+			if (Objet.getSommeVal(afd) < Objet.getSommeVal(afg))
+				return afd;
 			else
-				return fg.max();
+				return afd;
 		}
 		if (fd == null && fg != null)
 			return fg.max();
