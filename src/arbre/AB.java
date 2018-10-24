@@ -47,7 +47,7 @@ public class AB {
 			if (Objet.getSommeVal(afd) > Objet.getSommeVal(afg))
 				return afd;
 			if (Objet.getSommeVal(afd) < Objet.getSommeVal(afg))
-				return afd;
+				return afg;
 			else
 				return afd;
 		}

@@ -73,20 +73,21 @@ public class SacADos {
 
 	public void resoudreProgDyn() {
 		this.viderSac();
-		int poidsMaxS = (int) (this.poids_maximal * 10);
+		final int PRECISION = 1;
+		int poidsMaxS = (int) (this.poids_maximal * PRECISION);
 		float[][] M = new float[this.obj_pos.size()][(int) poidsMaxS + 1];
-		for (int j = 0; j < poidsMaxS + 1; ++j) {
-			if (this.obj_pos.get(0).getPoids() * 10 > j)
+		for (int j = 0; j < poidsMaxS + 1; ++j) { // poidsMaxS +1 et non poidsMaxS comme dit le tutoriel, sinon on essaiera d'atteindre un indice négatif
+			if (this.obj_pos.get(0).getPoids() * PRECISION > j)
 				M[0][j] = 0f;
 			else
 				M[0][j] = this.obj_pos.get(0).getValeur();
 		}
 		for (int i = 1; i < M.length; ++i) {
 			for (int j = 0; j < poidsMaxS + 1; ++j) {
-				if (this.obj_pos.get(i).getPoids() * 10 > j)
+				if (this.obj_pos.get(i).getPoids() * PRECISION > j)
 					M[i][j] = M[i - 1][j];
 				else
-					M[i][j] = Math.max(M[i - 1][j], M[i - 1][(int) (j - this.obj_pos.get(i).getPoids() * 10)]
+					M[i][j] = Math.max(M[i - 1][j], M[i - 1][(int) (j - this.obj_pos.get(i).getPoids() * PRECISION)]
 							+ this.obj_pos.get(i).getValeur());
 			}
 		}
@@ -98,7 +99,7 @@ public class SacADos {
 			while (i > 0 && M[i][j] == M[i - 1][j]) {
 				--i;
 			}
-			j = (int) (j - (this.obj_pos.get(i).getPoids() * 10));
+			j = (int) (j - (this.obj_pos.get(i).getPoids() * PRECISION));
 			if (j >= 0) // j>0 selon le tutoriel mais dans ce cas, refuse que le sac soit exactement
 						// rempli.
 				this.transporte.add(this.obj_pos.get(i));
@@ -108,7 +109,7 @@ public class SacADos {
 
 	public void resoudrePSE() {
 		AB a = new AB();
-		ArrayList<Objet> tmp = new ArrayList<>(this.obj_pos);
+		ArrayList<Objet> tmp = new ArrayList<>(this.obj_pos); //objets restants à ajouter
 		ArrayList<Objet> sorted = new ArrayList<>(this.obj_pos);
 		sorted.sort(Collections.reverseOrder()); // O(N*log(N))
 		this.resoudreGloutone();
@@ -121,21 +122,20 @@ public class SacADos {
 		}
 		this.transporte = new ArrayList<Objet>(a.max());
 	}
-
+	
 	public static void main(String[] args) throws IOException {
-		// SacADos mon_sac = null;
-		// try {
-		// mon_sac = new SacADos(args[0], Float.parseFloat(args[1]));
-		// } catch (Exception e) {
-		// System.err.println("Utilisation : ... resoudre-sac-a-dos.jar fichier poidsMax
-		// methode)");
-		// System.exit(-1);
-		// }
-		// String methode = args[2];
-
-		SacADos mon_sac = new SacADos("./items/itemsEval-float.txt", 30f); // différence avec poids max 30f et fic.
-																			// itemsEval
-		String methode = "pse"; // gloutonne, prog.dynamique, pse
+		 SacADos mon_sac = null;
+		 try {
+		 mon_sac = new SacADos(args[0], Float.parseFloat(args[1]));
+		 } catch (Exception e) {
+		 System.err.println("Utilisation : ... resoudre-sac-a-dos.jar fichier poidsMax methode");
+		 System.exit(-1);
+		 }
+		 String methode = args[2];
+//
+//		SacADos mon_sac = new SacADos("./items/itemsEval-float.txt", 30f); // différence avec poids max 30f et fic.
+//																			// itemsEval
+//		String methode = "prog.dynamique"; // gloutonne, prog.dynamique, pse
 
 		mon_sac.lectureFic();
 		long startTime = System.nanoTime();
