@@ -1,5 +1,3 @@
-[English](README.md) | [Français](README.fr.md)
-
 # dut_a2_aav_sacados
 
 Knapsack sorting project for aav
