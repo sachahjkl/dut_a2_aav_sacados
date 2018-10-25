@@ -2,4 +2,4 @@
 
 # dut_a2_aav_sacados
 
-Knapsack sorting project for aav
+Projet tri sac a dos aav
